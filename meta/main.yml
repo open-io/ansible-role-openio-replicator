@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Cedric DELGEHIER <cedric@openio.io>
-  description: PURPOSE
+  description: Install and configure OpenIO replicator
   company: OpenIO
   license: Apache
 

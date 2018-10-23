@@ -1,7 +1,9 @@
-# roles/ROLENAME/vars/RedHat.yml
+# roles/replicator/vars/RedHat.yml
 # Distribution-specific variables for RHEL, CentOS, ...
 ---
-ROLENAME_packages:
-  - openio-ROLENAME
+replicator_packages:
+  - java-headless
+  - openio-sds-replicator
 syslog_user: openio
+jar_path: "/usr/share/java/openio-sds-replicator/openio-sds-replicator-all.jar"
 ...

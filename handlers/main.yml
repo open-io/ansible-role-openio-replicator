@@ -1,8 +1,8 @@
-# roles/ROLENAME/handlers/main.yml
+# roles/replicator/handlers/main.yml
 ---
-#- name: restart ROLENAME
+#- name: restart replicator
 #  service:
-#    name: "{{ ROLENAME_service }}"
+#    name: "{{ replicator_service }}"
 #    state: restarted
 #
 ...

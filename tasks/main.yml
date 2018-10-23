@@ -1,4 +1,4 @@
-# roles/ROLENAME/tasks/main.yml
+# roles/replicator/tasks/main.yml
 ---
 - name: "Include {{ ansible_distribution }} variables"
   include_vars: "{{ item }}"
@@ -33,9 +33,9 @@
     path: "{{ item }}"
   register: _dir
   with_items:
-    - "/etc/gridinit.d/{{ openio_ROLENAME_namespace }}"
-    - "{{ openio_ROLENAME_sysconfig_dir }}/ROLENAME-{{ openio_ROLENAME_serviceid }}"
-    #- "{{ openio_ROLENAME_volume }}"
+    - "/etc/gridinit.d/{{ openio_replicator_namespace }}"
+    - "{{ openio_replicator_sysconfig_dir }}/replicator-{{ openio_replicator_serviceid }}"
+    #- "{{ openio_replicator_volume }}"
 
 - name: Ensure directories exists
   file:
@@ -51,7 +51,7 @@
 
 - name: Ensure log directory
   file:
-    path: "/var/log/oio/sds/{{ openio_ROLENAME_namespace }}/ROLENAME-{{ openio_ROLENAME_serviceid }}"
+    path: "/var/log/oio/sds/{{ openio_replicator_namespace }}/replicator-{{ openio_replicator_serviceid }}"
     state: directory
     owner: "{{ syslog_user }}"
     group: openio
@@ -67,20 +67,20 @@
     group: openio
     mode: 0644
   with_items:
-    - src: "ROLENAME.conf.j2"
-      dest: "{{ openio_ROLENAME_sysconfig_dir }}/\
-        ROLENAME-{{ openio_ROLENAME_serviceid }}/ROLENAME-{{ openio_ROLENAME_serviceid }}.conf"
-    - src: "gridinit_ROLENAME.conf.j2"
-      dest: "{{ openio_ROLENAME_gridinit_dir }}/{{ openio_ROLENAME_gridinit_file_prefix }}\
-        ROLENAME-{{ openio_ROLENAME_serviceid }}.conf"
-  register: _ROLENAME_conf
+    - src: "replicator.conf.j2"
+      dest: "{{ openio_replicator_sysconfig_dir }}/\
+        replicator-{{ openio_replicator_serviceid }}/replicator.conf"
+    - src: "gridinit_replicator.conf.j2"
+      dest: "{{ openio_replicator_gridinit_dir }}/{{ openio_replicator_gridinit_file_prefix }}\
+        replicator-{{ openio_replicator_serviceid }}.conf"
+  register: _replicator_conf
 
-- name: restart ROLENAME
+- name: restart replicator
   shell: |
     gridinit_cmd reload
-    gridinit_cmd restart  {{openio_ROLENAME_namespace}}-ROLENAME-{{openio_ROLENAME_serviceid}}
+    gridinit_cmd restart  {{openio_replicator_namespace}}-replicator-{{openio_replicator_serviceid}}
   when: 
-    - _ROLENAME_conf.changed
-    - not openio_ROLENAME_provision_only
+    - _replicator_conf.changed
+    - not openio_replicator_provision_only
   tags: configure
 ...

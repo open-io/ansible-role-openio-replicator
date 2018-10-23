@@ -1,70 +1,10 @@
+[![Build Status](https://travis-ci.org/open-io/ansible-role-openio-replicator.svg?branch=master)](https://travis-ci.org/open-io/ansible-role-openio-replicator)
+# Ansible role `replicator`
 
-> **Remove this part after a clone**
+An Ansible role for OpenIO replicator. Specifically, the responsibilities of this role are to:
 
-```sh
-git clone git@github.com:open-io/ansible-role-openio-skeleton.git ROLENAME
-cd ROLENAME
-grep -r -E '\b[A-Z]+\b' --exclude=LICENSE *
-find $PWD -type f -print0 | xargs -0 sed -i -e 's@ROLENAME@trueName@g'
-git remote -v
-git remote set-url origin git@github.com:open-io/ansible-role-openio-ROLENAME.git
-
-vi meta/main.yml # change purpose and tags
-vi README.md
-git worktree add docker-tests origin/docker-tests
-```
-
-It is **required** to:
-  - Change the author
-  - Choose one or many maintainers
-  - Change the purpose
-  - Change the rolename
-  - Inform the responsibilities of this role (README)
-  - Feed the `Role Variables` table (README)
-  - Add one or more examples of playbook (README)
-  - Activate tests in Travis CI
-  - Write functional tests in the branch `docker-tests`
-
-It is **recommended** to:
-  - Setup tests on your local machine (see below)
-
-> Use the following instructions to setup your testing environment
-> (make sure virtualenv2 is installed)
->
-```sh
-virtualenv2 env && source env/bin/activate
-pip install yamllint ansible-lint
-# Run tests run before each commit
-export HOOK=".git/hooks/prepare-commit-msg"
-if [ ! -f "$HOOK" ] ; then echo "#\!/bin/sh" > "$HOOK" && chmod +x "$HOOK"; fi
-cat << \EOF >> .git/hooks/prepare-commit-msg
-cmds=("ansible-lint . -x ANSIBLE0016" "yamllint -c .yamllint .")
-for cmd in "${cmds[@]}"; do
-  echo "Running ${cmd%% *}"
-  cmd_out="$($cmd)"
-  echo -n "${cmd_out}"
-  if [ "$cmd_out" ]; then
-      echo -e "\nRejecting commit: ${cmd%% *} returned errors"
-      exit 1
-  fi
-done
-EOF
-```
-
-#### `Role Variables` table
-```sh
-for i in $(grep -E "^openio_" defaults/main.yml |cut -d':' -f1| sort); do echo '|' '`'$i'`'' | `'$(grep $i defaults/main.yml|cut -d: -f2|sed -e "s/^ //")'` | ... |'; done
-```
-
------REMOVE--THE---8<-----PREVIOUS---PART------
-__
-
-[![Build Status](https://travis-ci.org/open-io/ansible-role-openio-ROLENAME.svg?branch=master)](https://travis-ci.org/open-io/ansible-role-openio-ROLENAME)
-# Ansible role `ROLENAME`
-
-An Ansible role for PURPOSE. Specifically, the responsibilities of this role are to:
-
--
+- install
+- configure
 
 ## Requirements
 
@@ -75,7 +15,26 @@ An Ansible role for PURPOSE. Specifically, the responsibilities of this role are
 
 | Variable   | Default | Comments (type)  |
 | :---       | :---    | :---             |
-| `openio_ROLENAME_...` | `...`   | ...              |
+| `openio_replicator_admin_bind_address` | `"{{ openio_replicator_bind_address }}"` | ... |
+| `openio_replicator_admin_bind_port` | `6018` | ... |
+| `openio_replicator_bind_address` | `hostvars[inventory_hostname]['ansible_' + openio_replicator_bind_interface]['ipv4']['address']` | ... |
+| `openio_replicator_bind_interface` | `ansible_default_ipv4.alias` | ... |
+| `openio_replicator_bind_port` | `6015` | ... |
+| `openio_replicator_consumer_queue` | `"oio-repli"` | ... |
+| `openio_replicator_consumer_target` | `"127.0.0.1` | ... |
+| `openio_replicator_destination_ecd_url` | `""` | ... |
+| `openio_replicator_destination_namespace` | `"OPENIO2"` | ... |
+| `openio_replicator_destination_oioproxy_url` | `"http://{{ openio_replicator_bind_address }}:6006"` | ... |
+| `openio_replicator_ecd_url` | `""` | ... |
+| `openio_replicator_gridinit_dir` | `"/etc/gridinit.d/{{ openio_replicator_namespace }}"` | ... |
+| `openio_replicator_gridinit_file_prefix` | `""` | ... |
+| `openio_replicator_location` | `"{{ ansible_hostname }}.{{ openio_replicator_serviceid }}"` | ... |
+| `openio_replicator_log_level` | `INFO` | ... |
+| `openio_replicator_namespace` | `OPENIO` | ... |
+| `openio_replicator_oioproxy_url` | `"http://{{ openio_replicator_bind_address }}:6006"` | ... |
+| `openio_replicator_provision_only` | `false` | ... |
+| `openio_replicator_serviceid` | `0` | ... |
+| `openio_replicator_workers` | `0` | ... |
 
 ## Dependencies
 
@@ -85,12 +44,50 @@ No dependencies.
 
 ```yaml
 - hosts: all
-  gather_facts: true
   become: true
+  vars:
+    NS: OPENIO
+    login: foo
+    passwd: bar
   roles:
-    - role: ROLENAME
-```
+    - role: repo
+      openio_repository_no_log: false
+      openio_repository_products:
+        sds:
+          release: "18.10"
+        replicator:
+          release: "18.10"
+          user: "{{ login }}"
+          password: "{{ passwd }}"
+    - role: gridinit
+      openio_gridinit_namespace: "{{ NS }}"
+      openio_gridinit_per_ns: true
 
+    - role: namespace
+      openio_namespace_name: "{{ NS }}"
+    - role: beanstalkd
+      openio_beanstalkd_namespace: "{{ NS }}"
+    - role: oioproxy
+      openio_oioproxy_namespace: "{{ NS }}"
+
+
+    - role: namespace
+      openio_namespace_name: "{{ NS }}2"
+      openio_namespace_oioproxy_url: "{{ ansible_default_ipv4.address }}:6106"
+      openio_namespace_event_agent_url: "{{ ansible_default_ipv4.address }}:6114"
+    - role: beanstalkd
+      openio_beanstalkd_namespace: "{{ NS }}2"
+      openio_beanstalkd_bind_port: 6114
+    - role: oioproxy
+      openio_oioproxy_namespace: "{{ NS }}2"
+      openio_oioproxy_bind_port: 6106
+
+    - role: replicator
+      openio_replicator_namespace: "{{ NS }}"
+      openio_replicator_workers: 1
+      openio_replicator_destination_namespace: "{{ NS }}2"
+      openio_replicator_destination_oioproxy_url: "http://{{ openio_replicator_bind_address }}:6106"
+```
 
 ```ini
 [all]
@@ -112,7 +109,3 @@ Apache License, Version 2.0
 ## Contributors
 
 - [Cedric DELGEHIER](https://github.com/cdelgehier) (maintainer)
-- [Romain ACCIARI](https://github.com/racciari) (maintainer)
-- [Vincent LEGOLL](https://github.com/vincent-legoll) (maintainer)
-- [Sebastien LAPIERRE](https://github.com/sebastienlapierre) (maintainer)
-- [Geoffrey TIEN](https://github.com/GeoffreyTien) (maintainer)

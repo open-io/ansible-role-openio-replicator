@@ -1,0 +1,40 @@
+{
+{% if openio_replicator_workers %}
+  "workers": {{ openio_replicator_workers }},
+{% endif %}
+  "source": {
+    "oio": {
+      "proxy": {
+        "ns": "{{ openio_replicator_namespace }}",
+{% if openio_replicator_ecd_url %}
+        "ecd": "{{ openio_replicator_ecd_url }}",
+{% endif %}
+        "url": "{{ openio_replicator_oioproxy_url }}"
+      }
+    }
+  },
+  "destination": {
+    "oio": {
+      "proxy": {
+        "ns": "{{ openio_replicator_destination_namespace }}",
+{% if openio_replicator_destination_ecd_url %}
+        "ecd": "{{ openio_replicator_destination_ecd_url }}",
+{% endif %}
+        "url": "{{ openio_replicator_destination_oioproxy_url }}"
+      }
+    }
+  },
+  "consumer": {
+    "target": "{{ openio_replicator_consumer_target }}",
+    "queue": "{{ openio_replicator_consumer_queue }}"
+  },
+  "logs": {
+    "access": "/var/log/oio/sds/{{ openio_replicator_namespace }}/replicator-{{ openio_replicator_serviceid }}/replicator.access",
+    "errors": "/var/log/oio/sds/{{ openio_replicator_namespace }}/replicator-{{ openio_replicator_serviceid }}/replicator.log",
+    "level": "{{ openio_replicator_log_level }}"
+  },
+  "admin": {
+    "bind": "{{ openio_replicator_admin_bind_address }}",
+    "port": {{ openio_replicator_admin_bind_port }}
+  }
+}

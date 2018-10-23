@@ -1,7 +1,9 @@
-# roles/ROLENAME/vars/Debian.yml
+# roles/replicator/vars/Debian.yml
 # Distribution-specific variables for Ubuntu, Debian, ...
 ---
-ROLENAME_packages:
-  - openio-ROLENAME
+replicator_packages:
+  - default-jre-headless
+  - openio-sds-replicator
 syslog_user: syslog
+jar_path: "/usr/share/openio-sds-replicator/openio-sds-replicator-all.jar"
 ...
