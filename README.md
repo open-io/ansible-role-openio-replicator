@@ -15,26 +15,25 @@ An Ansible role for OpenIO replicator. Specifically, the responsibilities of thi
 
 | Variable   | Default | Comments (type)  |
 | :---       | :---    | :---             |
-| `openio_replicator_admin_bind_address` | `"{{ openio_replicator_bind_address }}"` | ... |
-| `openio_replicator_admin_bind_port` | `6018` | ... |
-| `openio_replicator_bind_address` | `hostvars[inventory_hostname]['ansible_' + openio_replicator_bind_interface]['ipv4']['address']` | ... |
-| `openio_replicator_bind_interface` | `ansible_default_ipv4.alias` | ... |
-| `openio_replicator_bind_port` | `6015` | ... |
-| `openio_replicator_consumer_queue` | `"oio-repli"` | ... |
-| `openio_replicator_consumer_target` | `"127.0.0.1` | ... |
-| `openio_replicator_destination_ecd_url` | `""` | ... |
-| `openio_replicator_destination_namespace` | `"OPENIO2"` | ... |
-| `openio_replicator_destination_oioproxy_url` | `"http://{{ openio_replicator_bind_address }}:6006"` | ... |
-| `openio_replicator_ecd_url` | `""` | ... |
-| `openio_replicator_gridinit_dir` | `"/etc/gridinit.d/{{ openio_replicator_namespace }}"` | ... |
-| `openio_replicator_gridinit_file_prefix` | `""` | ... |
-| `openio_replicator_location` | `"{{ ansible_hostname }}.{{ openio_replicator_serviceid }}"` | ... |
-| `openio_replicator_log_level` | `INFO` | ... |
-| `openio_replicator_namespace` | `OPENIO` | ... |
-| `openio_replicator_oioproxy_url` | `"http://{{ openio_replicator_bind_address }}:6006"` | ... |
-| `openio_replicator_provision_only` | `false` | ... |
-| `openio_replicator_serviceid` | `0` | ... |
-| `openio_replicator_workers` | `0` | ... |
+| `openio_replicator_admin_bind_address` | `"{{ openio_replicator_bind_address }}"` | Address IP to use for admin |
+| `openio_replicator_admin_bind_port` | `6018` | Listening PORT for admin |
+| `openio_replicator_bind_address` | `hostvars[inventory_hostname]['ansible_' + openio_replicator_bind_interface]['ipv4']['address']` | Address IP to use |
+| `openio_replicator_bind_interface` | `ansible_default_ipv4.alias` | Interface to use |
+| `openio_replicator_bind_port` | `6015` | Listening PORT |
+| `openio_replicator_consumer_queue` | `"oio-repli"` | Tube used in queue service |
+| `openio_replicator_consumer_target` | `"127.0.0.1` | URL of queue service |
+| `openio_replicator_destination_ecd_url` | `""` | remote URL of ECD service |
+| `openio_replicator_destination_namespace` | `"OPENIO2"` | remote namespace |
+| `openio_replicator_destination_oioproxy_url` | `"http://{{ openio_replicator_bind_address }}:6006"` | remote URL of oioproxy |
+| `openio_replicator_ecd_url` | `""` | local URL of ECD |
+| `openio_replicator_gridinit_dir` | `"/etc/gridinit.d/{{ openio_replicator_namespace }}"` | Path to copy the gridinit conf |
+| `openio_replicator_gridinit_file_prefix` | `""` | Maybe set it to {{ openio_ecd_namespace }}- for old gridinit's style |
+| `openio_replicator_log_level` | `INFO` | Log level |
+| `openio_replicator_namespace` | `OPENIO` | Namespace |
+| `openio_replicator_oioproxy_url` | `"http://{{ openio_replicator_bind_address }}:6006"` | URL of local oioproxy |
+| `openio_replicator_provision_only` | `false` | Provision only without restarting services |
+| `openio_replicator_serviceid` | `0` | ID in gridinit |
+| `openio_replicator_workers` | `0` | Number of workers |
 
 ## Dependencies
 
@@ -47,21 +46,26 @@ No dependencies.
   become: true
   vars:
     NS: OPENIO
-    login: foo
-    passwd: bar
   roles:
-    - role: repo
+    - role: users
+    - role: repository
       openio_repository_no_log: false
       openio_repository_products:
         sds:
           release: "18.10"
+
+    - role: repository
+      openio_repository_no_log: false
+      openio_repository_products:
         replicator:
           release: "18.10"
-          user: "{{ login }}"
-          password: "{{ passwd }}"
+          user: "{{ lookup('env','USER') }}"
+          password: "{{ lookup('env','PASS') }}"
+
     - role: gridinit
       openio_gridinit_namespace: "{{ NS }}"
       openio_gridinit_per_ns: true
+
 
     - role: namespace
       openio_namespace_name: "{{ NS }}"
