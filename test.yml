@@ -1,16 +1,27 @@
 # Test playbook
 ---
-
 - hosts: all
   become: true
   vars:
     NS: TRAVIS
   roles:
-    - role: repo
+    - role: users
+    - role: repository
       openio_repository_no_log: false
       openio_repository_products:
         sds:
-          release: "18.04"
+          release: "18.10"
+
+    - role: repository
+      openio_repository_no_log: false
+      openio_repository_products:
+        replicator:
+          release: "18.10"
+          user: "{{ lookup('env','USER') }}"
+          password: "{{ lookup('env','PASS') }}"
+          # user: ""
+          # password: ""
+
     - role: gridinit
       openio_gridinit_namespace: "{{ NS }}"
       openio_gridinit_per_ns: true
@@ -41,4 +52,3 @@
       openio_replicator_destination_namespace: "{{ NS }}2"
       openio_replicator_destination_oioproxy_url: "http://{{ openio_replicator_bind_address }}:6106"
 ...
-

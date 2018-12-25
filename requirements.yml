@@ -1,15 +1,19 @@
 ---
+- src: https://github.com/open-io/ansible-role-openio-repository.git
+  version: master
+  name: repository
+
 - src: https://github.com/open-io/ansible-role-openio-gridinit.git
   version: master
   name: gridinit
 
-- src: https://github.com/open-io/ansible-role-openio-repository.git
-  version: master
-  name: repo
-
 - src: https://github.com/open-io/ansible-role-openio-namespace.git
   version: master
   name: namespace
+
+- src: https://github.com/open-io/ansible-role-openio-users.git
+  version: master
+  name: users
 
 - src: https://github.com/open-io/ansible-role-openio-oioproxy.git
   version: master
