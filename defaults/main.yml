@@ -15,7 +15,6 @@ openio_replicator_ecd_url: ""
 
 
 openio_replicator_provision_only: false
-openio_replicator_location: "{{ ansible_hostname }}.{{ openio_replicator_serviceid }}"
 
 openio_replicator_destination_namespace: "OPENIO2"
 openio_replicator_destination_oioproxy_url: "http://{{ openio_replicator_bind_address }}:6006"
