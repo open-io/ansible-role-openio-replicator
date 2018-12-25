@@ -7,20 +7,6 @@
     - "{{ ansible_os_family }}.yml"
   tags: install
 
-- name: Create the 'openio' group
-  group:
-    name: openio
-    gid: "{{ openio_group_openio_gid | default('220')}}"
-  tags: install
-
-- name: Create the 'openio' user
-  user:
-    name: openio
-    comment: "openio account"
-    uid: "{{ openio_user_openio_uid | default('120')}}"
-    group: openio
-  tags: install
-
 - name: "Include {{ ansible_distribution }} tasks"
   include_tasks: "{{ item }}"
   with_first_found:
@@ -28,35 +14,19 @@
     - "{{ ansible_os_family }}.yml"
   tags: install
 
-- name: Test directories presence
-  stat:
-    path: "{{ item }}"
-  register: _dir
-  with_items:
-    - "/etc/gridinit.d/{{ openio_replicator_namespace }}"
-    - "{{ openio_replicator_sysconfig_dir }}/replicator-{{ openio_replicator_serviceid }}"
-    #- "{{ openio_replicator_volume }}"
-
 - name: Ensure directories exists
   file:
-    path: "{{ item.item }}"
+    path: "{{ item.path }}"
     state: directory
-    owner: openio
-    group: openio
-    mode: 0755
-    recurse: true
-  with_items: "{{ _dir.results }}"
-  when: not item.stat.exists
-  tags: install
-
-- name: Ensure log directory
-  file:
-    path: "/var/log/oio/sds/{{ openio_replicator_namespace }}/replicator-{{ openio_replicator_serviceid }}"
-    state: directory
-    owner: "{{ syslog_user }}"
-    group: openio
-    mode: 0750
-    recurse: true
+    owner: "{{ item.owner | default('openio') }}"
+    group: "{{ item.group | default('openio') }}"
+    mode: "{{ item.mode | default(0755) }}"
+  with_items:
+    - path: "/etc/gridinit.d/{{ openio_replicator_namespace }}"
+    - path: "{{ openio_replicator_sysconfig_dir }}/{{ openio_replicator_servicename }}"
+    - path: "/var/log/oio/sds/{{ openio_replicator_namespace }}/{{ openio_replicator_servicename }}"
+      owner: "{{ syslog_user }}"
+      mode: "0750"
   tags: install
 
 - name: Generate configuration files
@@ -69,17 +39,17 @@
   with_items:
     - src: "replicator.conf.j2"
       dest: "{{ openio_replicator_sysconfig_dir }}/\
-        replicator-{{ openio_replicator_serviceid }}/replicator.conf"
+        {{ openio_replicator_servicename }}/replicator.conf"
     - src: "gridinit_replicator.conf.j2"
       dest: "{{ openio_replicator_gridinit_dir }}/{{ openio_replicator_gridinit_file_prefix }}\
-        replicator-{{ openio_replicator_serviceid }}.conf"
+        {{ openio_replicator_servicename }}.conf"
   register: _replicator_conf
 
 - name: restart replicator
   shell: |
     gridinit_cmd reload
-    gridinit_cmd restart  {{openio_replicator_namespace}}-replicator-{{openio_replicator_serviceid}}
-  when: 
+    gridinit_cmd restart  {{ openio_replicator_namespace }}-{{ openio_replicator_servicename }}
+  when:
     - _replicator_conf.changed
     - not openio_replicator_provision_only
   tags: configure
