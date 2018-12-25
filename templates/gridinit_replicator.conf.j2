@@ -1,5 +1,5 @@
 # {{ ansible_managed }}
-[Service.{{ openio_replicator_namespace }}-replicator-{{ openio_replicator_serviceid }}]
+[Service.{{ openio_replicator_namespace }}-{{ openio_replicator_servicename }}]
 command=java -jar {{ jar_path }} {{ openio_replicator_sysconfig_dir }}/{{ openio_replicator_servicename }}/replicator.conf
 enabled=true
 start_at_boot=true
