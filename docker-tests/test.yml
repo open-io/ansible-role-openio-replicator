@@ -1,0 +1,54 @@
+# Test playbook
+---
+- hosts: all
+  become: true
+  vars:
+    NS: TRAVIS
+  roles:
+    - role: users
+    - role: repository
+      openio_repository_no_log: false
+      openio_repository_products:
+        sds:
+          release: "18.10"
+
+    - role: repository
+      openio_repository_no_log: false
+      openio_repository_products:
+        replicator:
+          release: "18.10"
+          user: "{{ lookup('env','USR') }}"
+          password: "{{ lookup('env','PASS') }}"
+          # user: ""
+          # password: ""
+
+    - role: gridinit
+      openio_gridinit_namespace: "{{ NS }}"
+      openio_gridinit_per_ns: true
+
+
+    - role: namespace
+      openio_namespace_name: "{{ NS }}"
+    - role: beanstalkd
+      openio_beanstalkd_namespace: "{{ NS }}"
+    - role: oioproxy
+      openio_oioproxy_namespace: "{{ NS }}"
+
+
+    - role: namespace
+      openio_namespace_name: "{{ NS }}2"
+      openio_namespace_oioproxy_url: "{{ ansible_default_ipv4.address }}:6106"
+      openio_namespace_event_agent_url: "{{ ansible_default_ipv4.address }}:6114"
+    - role: beanstalkd
+      openio_beanstalkd_namespace: "{{ NS }}2"
+      openio_beanstalkd_bind_port: 6114
+    - role: oioproxy
+      openio_oioproxy_namespace: "{{ NS }}2"
+      openio_oioproxy_bind_port: 6106
+
+    - role: role_under_test
+      openio_replicator_namespace: "{{ NS }}"
+      openio_replicator_workers: 1
+      openio_replicator_destination_namespace: "{{ NS }}2"
+      openio_replicator_destination_oioproxy_url: "http://{{ openio_replicator_bind_address }}:6106"
+...

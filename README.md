@@ -17,11 +17,11 @@ An Ansible role for OpenIO replicator. Specifically, the responsibilities of thi
 | :---       | :---    | :---             |
 | `openio_replicator_admin_bind_address` | `"{{ openio_replicator_bind_address }}"` | Address IP to use for admin |
 | `openio_replicator_admin_bind_port` | `6018` | Listening PORT for admin |
-| `openio_replicator_bind_address` | `hostvars[inventory_hostname]['ansible_' + openio_replicator_bind_interface]['ipv4']['address']` | Address IP to use |
+| `openio_replicator_bind_address` | `openio_bind_address` | Address IP to use |
 | `openio_replicator_bind_interface` | `ansible_default_ipv4.alias` | Interface to use |
 | `openio_replicator_bind_port` | `6015` | Listening PORT |
 | `openio_replicator_consumer_queue` | `"oio-repli"` | Tube used in queue service |
-| `openio_replicator_consumer_target` | `"127.0.0.1` | URL of queue service |
+| `openio_replicator_consumer_target` | `"{{ openio_replicator_bind_address }}:6014"` | URL of queue service |
 | `openio_replicator_destination_ecd_url` | `""` | remote URL of ECD service |
 | `openio_replicator_destination_namespace` | `"OPENIO2"` | remote namespace |
 | `openio_replicator_destination_oioproxy_url` | `"http://{{ openio_replicator_bind_address }}:6006"` | remote URL of oioproxy |
@@ -32,8 +32,8 @@ An Ansible role for OpenIO replicator. Specifically, the responsibilities of thi
 | `openio_replicator_namespace` | `OPENIO` | Namespace |
 | `openio_replicator_oioproxy_url` | `"http://{{ openio_replicator_bind_address }}:6006"` | URL of local oioproxy |
 | `openio_replicator_provision_only` | `false` | Provision only without restarting services |
-| `openio_replicator_serviceid` | `0` | ID in gridinit |
-| `openio_replicator_workers` | `0` | Number of workers |
+| `openio_replicator_serviceid` | `"{{ 0 + openio_legacy_serviceid | d(0) | int }}"` | ID in gridinit |
+| `openio_replicator_workers` | `1` | Number of workers |
 
 ## Dependencies
 
