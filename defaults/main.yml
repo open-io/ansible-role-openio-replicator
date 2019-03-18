@@ -1,18 +1,20 @@
 # roles/replicator/defaults/main.yml
 ---
 openio_replicator_namespace: "OPENIO"
-openio_replicator_serviceid: "0"
+openio_replicator_serviceid: "{{ 0 + openio_legacy_serviceid | d(0) | int }}"
 
 openio_replicator_gridinit_dir: "/etc/gridinit.d/{{ openio_replicator_namespace }}"
 openio_replicator_gridinit_file_prefix: ""
 
 openio_replicator_bind_interface: "{{ ansible_default_ipv4.alias }}"
 openio_replicator_bind_address:
-  "{{ hostvars[inventory_hostname]['ansible_' + openio_replicator_bind_interface]['ipv4']['address'] }}"
+  "{{ openio_bind_address \
+    | default(hostvars[inventory_hostname]['ansible_' + openio_replicator_bind_interface]['ipv4']['address']) }}"
 openio_replicator_bind_port: 6015
 openio_replicator_oioproxy_url: "http://{{ openio_replicator_bind_address }}:6006"
-openio_replicator_ecd_url: ""
-
+openio_replicator_ecd_url: "{{ 'http://' ~ openio_replicator_bind_address ~ ':6017' \
+  if groups.ecd is defined and groups.ecd \
+  else '' }}"
 
 openio_replicator_provision_only: false
 
@@ -20,10 +22,10 @@ openio_replicator_destination_namespace: "OPENIO2"
 openio_replicator_destination_oioproxy_url: "http://{{ openio_replicator_bind_address }}:6006"
 openio_replicator_destination_ecd_url: ""
 
-openio_replicator_consumer_target: "127.0.0.1:11300"
+openio_replicator_consumer_target: "{{ openio_replicator_bind_address }}:6014"
 openio_replicator_consumer_queue: "oio-repli"
 
-openio_replicator_workers: 0
+openio_replicator_workers: 1
 openio_replicator_log_level: INFO
 
 openio_replicator_admin_bind_address: "{{ openio_replicator_bind_address }}"
