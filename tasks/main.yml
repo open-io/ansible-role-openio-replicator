@@ -26,7 +26,7 @@
     - path: "{{ openio_replicator_sysconfig_dir }}/{{ openio_replicator_servicename }}"
     - path: "/var/log/oio/sds/{{ openio_replicator_namespace }}/{{ openio_replicator_servicename }}"
       owner: "{{ syslog_user }}"
-      mode: "0750"
+      mode: "0770"
   tags: install
 
 - name: Generate configuration files
@@ -45,12 +45,24 @@
         {{ openio_replicator_servicename }}.conf"
   register: _replicator_conf
 
-- name: restart replicator
+- name: "restart replicator to apply the new configuration"
   shell: |
     gridinit_cmd reload
     gridinit_cmd restart  {{ openio_replicator_namespace }}-{{ openio_replicator_servicename }}
+  register: _restart_replicator
   when:
-    - _replicator_conf.changed
+    - _replicator_conf is changed
     - not openio_replicator_provision_only
   tags: configure
+
+- block:
+    - name: "Ensure replicator is started"
+      command: gridinit_cmd start {{ openio_replicator_namespace }}-{{ openio_replicator_servicename }}
+      register: _start_replicator
+      changed_when: '"Success" in _start_replicator.stdout'
+      when:
+        - not openio_replicator_provision_only
+        - _restart_replicator is skipped
+      tags: configure
+  when: openio_bootstrap | d(false)
 ...
