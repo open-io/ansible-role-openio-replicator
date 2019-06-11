@@ -5,7 +5,9 @@
   with_first_found:
     - "{{ ansible_distribution }}.yml"
     - "{{ ansible_os_family }}.yml"
-  tags: install
+  tags:
+    - install
+    - configure
 
 - name: "Include {{ ansible_distribution }} tasks"
   include_tasks: "{{ item }}"
@@ -27,7 +29,7 @@
     - path: "/var/log/oio/sds/{{ openio_replicator_namespace }}/{{ openio_replicator_servicename }}"
       owner: "{{ syslog_user }}"
       mode: "0770"
-  tags: install
+  tags: configure
 
 - name: Generate configuration files
   template:
@@ -44,6 +46,7 @@
       dest: "{{ openio_replicator_gridinit_dir }}/{{ openio_replicator_gridinit_file_prefix }}\
         {{ openio_replicator_servicename }}.conf"
   register: _replicator_conf
+  tags: configure
 
 - name: "restart replicator to apply the new configuration"
   shell: |
