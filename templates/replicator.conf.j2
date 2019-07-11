@@ -29,12 +29,7 @@
     "queue": "{{ openio_replicator_consumer_queue }}"
   },
   "logs": {
-    "access": "/var/log/oio/sds/{{ openio_replicator_namespace }}/{{ openio_replicator_servicename }}/replicator.access",
-    "errors": "/var/log/oio/sds/{{ openio_replicator_namespace }}/{{ openio_replicator_servicename }}/replicator.log",
+    "syslogtag": "OIO,{{ openio_replicator_namespace }},replicator,{{ openio_replicator_serviceid }}",
     "level": "{{ openio_replicator_log_level }}"
-  },
-  "admin": {
-    "bind": "{{ openio_replicator_admin_bind_address }}",
-    "port": {{ openio_replicator_admin_bind_port }}
   }
 }
