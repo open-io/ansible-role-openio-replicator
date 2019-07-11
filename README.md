@@ -15,11 +15,6 @@ An Ansible role for OpenIO replicator. Specifically, the responsibilities of thi
 
 | Variable   | Default | Comments (type)  |
 | :---       | :---    | :---             |
-| `openio_replicator_admin_bind_address` | `"{{ openio_replicator_bind_address }}"` | Address IP to use for admin |
-| `openio_replicator_admin_bind_port` | `6018` | Listening PORT for admin |
-| `openio_replicator_bind_address` | `openio_bind_address` | Address IP to use |
-| `openio_replicator_bind_interface` | `ansible_default_ipv4.alias` | Interface to use |
-| `openio_replicator_bind_port` | `6015` | Listening PORT |
 | `openio_replicator_consumer_queue` | `"oio-repli"` | Tube used in queue service |
 | `openio_replicator_consumer_target` | `"{{ openio_replicator_bind_address }}:6014"` | URL of queue service |
 | `openio_replicator_destination_ecd_url` | `""` | remote URL of ECD service |
