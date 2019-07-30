@@ -1,10 +1,10 @@
 # roles/replicator/defaults/main.yml
 ---
-openio_replicator_namespace: "{{ namespace | default('OPENIO') }}"
+openio_replicator_namespace: "{{ namespace | d(default_namespace) | d('OPENIO') }}"
 openio_replicator_serviceid: "{{ 0 + openio_legacy_serviceid | d(0) | int }}"
 
 openio_replicator_gridinit_dir: "/etc/gridinit.d/{{ openio_replicator_namespace }}"
-openio_replicator_gridinit_file_prefix: ""
+openio_replicator_gridinit_file_prefix: "{{ namespace | d(default_namespace) | d('OPENIO') }}-"
 
 openio_replicator_bind_interface: "{{ ansible_default_ipv4.alias }}"
 openio_replicator_bind_address:
