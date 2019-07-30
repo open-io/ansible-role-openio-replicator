@@ -1,8 +1,8 @@
 # {{ ansible_managed }}
 [Service.{{ openio_replicator_namespace }}-{{ openio_replicator_servicename }}]
 command=java -jar {{ jar_path }} {{ openio_replicator_sysconfig_dir }}/{{ openio_replicator_servicename }}/replicator.conf
-enabled=true
-start_at_boot=true
+enabled={{ openio_replicator_gridinit_enabled }}
+start_at_boot={{ openio_replicator_gridinit_start_at_boot }}
 on_die=respawn
 group={{ openio_replicator_namespace }},replicator,{{ openio_replicator_serviceid }}
 uid=openio

@@ -28,4 +28,6 @@ openio_replicator_consumer_queue: "oio-repli"
 openio_replicator_workers: 1
 openio_replicator_log_level: INFO
 
+openio_replicator_gridinit_start_at_boot: true
+openio_replicator_gridinit_enabled: true
 ...
