@@ -5,6 +5,9 @@
 {% if openio_replicator_same_object_policy  %}
   "sameObjectPolicy": true,
 {% endif %}
+{% if not openio_replicator_compare_same_object_version  %}
+  "compareSameObjectVersion": false,
+{% endif %}
   "source": {
     "oio": {
       "proxy": {

@@ -32,4 +32,5 @@ openio_replicator_gridinit_start_at_boot: true
 openio_replicator_gridinit_enabled: true
 
 openio_replicator_same_object_policy: false
+openio_replicator_compare_same_object_version: true
 ...
