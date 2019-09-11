@@ -28,6 +28,7 @@ An Ansible role for OpenIO replicator. Specifically, the responsibilities of thi
 | `openio_replicator_oioproxy_url` | `"http://{{ openio_replicator_bind_address }}:6006"` | URL of local oioproxy |
 | `openio_replicator_provision_only` | `false` | Provision only without restarting services |
 | `openio_replicator_same_object_policy` | `false` | To replicate with the same storage policy |
+| `openio_replicator_compare_same_object_version` | `true` | To compare the replicated objects with the same object version |
 | `openio_replicator_serviceid` | `"{{ 0 + openio_legacy_serviceid | d(0) | int }}"` | ID in gridinit |
 | `openio_replicator_workers` | `1` | Number of workers |
 
