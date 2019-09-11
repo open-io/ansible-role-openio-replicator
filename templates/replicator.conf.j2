@@ -2,6 +2,9 @@
 {% if openio_replicator_workers %}
   "workers": {{ openio_replicator_workers }},
 {% endif %}
+{% if openio_replicator_same_object_policy  %}
+  "sameObjectPolicy": true,
+{% endif %}
   "source": {
     "oio": {
       "proxy": {
