@@ -1,8 +1,2 @@
 ---
-openio_replicator_sysconfig_dir: "/etc/oio/sds/{{ openio_replicator_namespace }}"
-openio_replicator_servicename: "replicator-{{ openio_replicator_serviceid }}"
-
-openio_replicator_definition_file: >
-  "{{ openio_replicator_sysconfig_dir }}/
-  {{ openio_replicator_servicename }}/{{ openio_replicator_servicename }}.conf"
 ...

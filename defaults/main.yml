@@ -1,4 +1,3 @@
-# roles/replicator/defaults/main.yml
 ---
 openio_replicator_namespace: "{{ namespace | d(default_namespace) | d('OPENIO') }}"
 openio_replicator_serviceid: "{{ 0 + openio_legacy_serviceid | d(0) | int }}"
@@ -33,4 +32,11 @@ openio_replicator_gridinit_enabled: true
 
 openio_replicator_same_object_policy: false
 openio_replicator_compare_same_object_version: true
+
+openio_replicator_sysconfig_dir: "/etc/oio/sds/{{ openio_replicator_namespace }}"
+openio_replicator_servicename: "replicator-{{ openio_replicator_serviceid }}"
+
+openio_replicator_definition_file: >
+  "{{ openio_replicator_sysconfig_dir }}/
+  {{ openio_replicator_servicename }}/{{ openio_replicator_servicename }}.conf"
 ...
