@@ -16,7 +16,7 @@
       openio_repository_mirror_host: mirror2.openio.io
       openio_repository_products:
         replicator:
-          release: "19.04"
+          release: "19.10"
           user: "{{ lookup('env','USR') }}"
           password: "{{ lookup('env','PASS') }}"
           # user: ""
@@ -24,7 +24,7 @@
 
     - role: gridinit
       openio_gridinit_namespace: "{{ NS }}"
-      openio_gridinit_per_ns: true
+      #openio_gridinit_per_ns: true
 
 
     - role: namespace

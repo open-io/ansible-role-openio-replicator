@@ -24,7 +24,6 @@
     group: "{{ item.group | default('openio') }}"
     mode: "{{ item.mode | default(0755) }}"
   with_items:
-    - path: "/etc/gridinit.d/{{ openio_replicator_namespace }}"
     - path: "{{ openio_replicator_sysconfig_dir }}/{{ openio_replicator_servicename }}"
     - path: "/var/log/oio/sds/{{ openio_replicator_namespace }}/{{ openio_replicator_servicename }}"
       owner: "{{ syslog_user }}"
