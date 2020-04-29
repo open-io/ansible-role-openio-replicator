@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/open-io/ansible-role-openio-replicator.svg?branch=master)](https://travis-ci.org/open-io/ansible-role-openio-replicator)
+[![Build Status](https://travis-ci.org/open-io/ansible-role-openio-replicator.svg?branch=20.04)](https://travis-ci.org/open-io/ansible-role-openio-replicator)
 # Ansible role `replicator`
 
 An Ansible role for OpenIO replicator. Specifically, the responsibilities of this role are to:
