@@ -28,7 +28,7 @@
     - path: "{{ openio_replicator_sysconfig_dir }}/{{ openio_replicator_servicename }}"
     - path: "/var/log/oio/sds/{{ openio_replicator_namespace }}/{{ openio_replicator_servicename }}"
       owner: "{{ syslog_user }}"
-      mode: "0770"
+      mode: "{{ openio_replicator_log_dir_permission | default(0770) }}"
   tags: configure
 
 - name: Generate configuration files
